@@ -146,9 +146,9 @@ tidy <- ddply(    superset
 
 # Finally, for clarity I will replace the ActivityIDs with ActivityLabels once more
 tidy$Activity <- sqldf("  SELECT lblA.label
-                          FROM superset as sup
+                          FROM tidy as t
                             JOIN lbl_activity as lblA
-                          WHERE sup.Activity = lblA.activityID
+                          WHERE t.Activity = lblA.activityID
                       ")
 
 # and lastly, write out the results
