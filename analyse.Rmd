@@ -37,7 +37,7 @@ For each record in the dataset it is provided:
 Load required libraries
 ```{r echo=TRUE}
 library(sqldf)
-library(ggplot2)
+library(plyr)
 ```
 
 Set the working directory and extract the raw data
@@ -115,14 +115,51 @@ Now that the OBSERVATIONS are suitably collated, we need to append the ACTIVITIE
 
 ```{r echo=TRUE}
 # first we will column bind the activities and subjects to the observations
-superset <- cbind(subjects, activities, observations)
+superset <- data.frame(subjects, activities, observations)
 names(superset) <- c("SubjectID", "Activity", names(observations))
 
 # now we will replace the activity integers with their corresponding names
-superset$Activity <- sqldf("
-                            SELECT lblA.label
-                            FROM superset as sup
-                              JOIN lbl_activity as lblA
-                            WHERE sup.Activity = lblA.activityID
+superset$Activity <- sqldf("  SELECT lblA.label
+                              FROM superset as sup
+                                JOIN lbl_activity as lblA
+                              WHERE sup.Activity = lblA.activityID
                           ")
 ```
+
+Finally, we are to create a new tidy dataset that is the average of each activity for each subject.
+
+```{r echo=TRUE}
+# for the sake of making this easy, I am going to recreate the superset, without the ActivityLabel
+# I found when using the sqldf package, there was a datatype error where the Activity column was
+# perceived as a data.frame() and therefore invalid.
+
+rm(superset)
+superset <- data.frame(subjects, activities, observations)
+names(superset) <- c("SubjectID", "Activity", names(observations))
+
+# now group the data by SubjectID and Activity and calculate the mean for all observations
+tidy <- ddply(    superset
+                , c("SubjectID", "Activity")
+                , function(q) sapply(q[, c(3:68)], mean)
+             )
+# I tried so many things before I found ddply. This is amazing, and quick!
+
+# Finally, for clarity I will replace the ActivityIDs with ActivityLabels once more
+tidy$Activity <- sqldf("  SELECT lblA.label
+                          FROM superset as sup
+                            JOIN lbl_activity as lblA
+                          WHERE sup.Activity = lblA.activityID
+                      ")
+
+# and lastly, write out the results
+write.table(tidy, "human_activity_data.txt")
+
+```
+
+I spent so long on this final part. Probably spent 4 hours on the whole assignment, with 3 of them being on this last question. It took me a very very long time to figure out how to calculate the averages across the columns. 
+- colMeans returned a data frame that was oriented the wrong way. 
+- Writing a sqldf query was not practical due to the field names and the numebr of them
+- had some wierd issues with the ActivityNames, they made life difficult which is why I reverted to using the integers
+- finally hit upon ddply.
+
+I have been avoiding some of the higher-level libraries like plyr because I want to really wrap my head around the more basic building blocks of R. But in this case, it was dead easy - once I stumbled on it, I had the solution in 5 minutes. Have learned a valuable lesson: *don't be too stubborn!*. 
