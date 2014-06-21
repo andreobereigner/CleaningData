@@ -1,0 +1,51 @@
+#Human Activity Recognition Using Smartphones
+
+### Course Project
+### Getting and cleaning Data, Coursera
+### Nick Burns, 2014
+
+-------------------------------------------------------------------------------
+
+## Background
+
+The purpose of this project is to extract and clean a raw dataset, producing
+a tidy dataset for further analysis. The raw data is from a study into Human
+Activity Recognition using Smartphones, which is part of an emerging field of
+study into *wearable computing*. The raw dataset is from the **UCI Machine 
+Learning Repository** (http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones),
+where a full description of the experiment and dataset are available. Below is a 
+brief description of the raw dataset, as described by Reyes-Ortiz, Anguita, Ghio and Oneto
+at the above website:
+
+### Description of the Dataset
+The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+
+### Attribute Information
+For each record in the dataset it is provided: 
+- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration. 
+- Triaxial Angular velocity from the gyroscope. 
+- A 561-feature vector with time and frequency domain variables. 
+- Its activity label. 
+- An identifier of the subject who carried out the experiment.
+
+(Reyes-Ortiz, Anguita, Ghio and Oneto. UCI Machine Learning Repository. http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones, (accessed 21 June 2014))
+
+-------------------------------------------------------------------------------
+
+## Preparation
+
+Load required libraries
+```{r echo=TRUE}
+library(sqldf)
+library(ggplot2)
+```
+
+Set the working directory and extract the raw data
+```{r echo=TRUE}
+setwd("C:/DataSciToolkit/DataScienceToolkit/GetCleanData/CleaningData")
+unzip("getdata-projectfiles-UCI HAR Dataset.zip")
+
+rawDataDir <- "UCI HAR Dataset"
+rawTestDir <- "./UCI HAR Dataset/test"
+rawTrainDir <- "./UCI HAR Dataset/train"
+```
