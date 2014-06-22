@@ -16,4 +16,4 @@ run_analysis.R will do the following:
 
 You can read in the human_activity_data.txt from R, using: read.table("human_activity_data.txt")
 
-A more thorough explanation and account of the process is given in the markdown file: analyse.md
+A more thorough explanation and account of the process is given in the markdown file: CodeBook.md
